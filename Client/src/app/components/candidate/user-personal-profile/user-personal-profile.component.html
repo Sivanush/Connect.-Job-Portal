@@ -1,0 +1,255 @@
+
+<app-header></app-header>
+    <div class="w-full h-screen flex flex-col">
+        <div class="flex justify-between items-start h-screen bg-gray-50 p-8">
+            <!-- Sidebar -->
+            <div class="w-1/3 bg-teal-200 text-black p-8 rounded-lg shadow-md m-8">
+              <div class="flex items-center mb-6">
+               
+                <h1 class="text-3xl font-extrabold">Complete Your Profile</h1>
+              </div>
+              <p class="mb-4 text-lg leading-relaxed">Unlock 500+ Jobs From Top Companies And Receive Direct Calls From HRs</p>
+              <ul class="list-disc list-inside space-y-3 text-lg">
+                <li>Take 4 Steps</li>
+                <li>Direct Call From HR</li>
+                <li>Connect With Top Companies</li>
+              </ul>
+            </div>
+          
+            <!-- Form Steps -->
+            <div class="w-2/3 bg-white p-10 rounded-lg shadow-lg">
+              <form [formGroup]="profileForm" >
+                <div *ngIf="currentStep === 1">
+                  <h2 class="text-2xl font-semibold mb-6 text-purple-700">About Me</h2>
+                  <div class="mb-6">
+                    <label for="fullname" class="block mb-2 text-gray-700">Full Name</label>
+                    <input formControlName="fullName" name="fullName" type="text" id="fullname"
+                           class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                    <div *ngIf="profileForm.get('fullName')?.invalid && profileForm.get('fullName')?.touched"
+                         class="text-red-500 mt-1">Invalid name.
+                    </div>
+                  </div>
+                  <div class="mb-6">
+                    <label for="phone" class="block mb-2 text-gray-700">Phone</label>
+                    <input formControlName="phone" name="phone" type="text" id="phone"
+                           class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                    <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched"
+                         class="text-red-500 mt-1">
+                      <div *ngIf="profileForm.get('phone')?.errors?.['required']">Phone number is required.</div>
+                      <div *ngIf="profileForm.get('phone')?.errors?.['minlength'] || profileForm.get('phone')?.errors?.['maxlength']">Phone number must be 10 digits long.</div>
+                      <div *ngIf="profileForm.get('phone')?.errors?.['pattern']">Phone number must contain only numbers.</div>
+                    </div>
+                </div>
+                
+                  <div class="mb-6">
+                    <label for="dob" class="block mb-2 text-gray-700">Date Of Birth</label>
+                    <input formControlName="dob" name="dob" type="date" id="dob"
+                           class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                    <div *ngIf="profileForm.get('dob')?.invalid && profileForm.get('dob')?.touched"
+                         class="text-red-500 mt-1">Date of Birth is required.
+                    </div>
+                  </div>
+                  <div class="mb-6">
+                    <label for="upload" class="block mb-2 text-gray-700">Upload Image</label>
+                    <input formControlName="upload" type="file" id="upload"
+                           class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                  </div>
+                  <div class="mb-6">
+                    <label class="block mb-2 text-gray-700">Gender</label>
+                    <div class="flex space-x-4">
+                      <label class="inline-flex items-center">
+                        <input formControlName="gender" name="gender" type="radio" value="Male"
+                               class="form-radio text-purple-700 focus:ring-purple-700">
+                        <span class="ml-2">Male</span>
+                      </label>
+                      <label class="inline-flex items-center">
+                        <input formControlName="gender" name="gender" type="radio" value="Female"
+                               class="form-radio text-purple-700 focus:ring-purple-700">
+                        <span class="ml-2">Female</span>
+                      </label>
+                      <label class="inline-flex items-center">
+                        <input formControlName="gender" name="gender" type="radio" value="Others"
+                               class="form-radio text-purple-700 focus:ring-purple-700">
+                        <span class="ml-2">Others</span>
+                      </label>
+                    </div>
+                    <div *ngIf="profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched"
+                         class="text-red-500 mt-1">Gender is required.
+                    </div>
+                  </div>
+                </div>
+              
+                <div *ngIf="currentStep === 2">
+                  <h2 class="text-2xl font-semibold mb-6 text-purple-700">Education</h2>
+                  <div >
+                    <!-- Education Qualification Dropdown -->
+                    <div class="mb-6">
+                      <label for="qualification" class="block mb-2 text-gray-700">Education Qualification</label>
+                      <select formControlName="qualification" name="qualification" id="qualification"
+                              class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                        <option value="">Select Education Qualification</option>
+                        <option value="10th">10th</option>
+                        <option value="12th">Higher Secondary</option>
+                        <option value="UG">UG</option>
+                        <option value="PG">PG</option>
+                        <option value="PhD">PhD</option>
+                        <option value="ITI">ITI</option>
+                        <option value="Diploma">Diploma</option>
+                        <!-- Add more options as needed -->
+                      </select>
+                      <div *ngIf="profileForm.get('qualification')?.touched && profileForm.get('qualification')?.invalid" class="text-red-500 mt-1">
+                        <span *ngIf="profileForm.get('qualification')?.errors?.['required']">Education Qualification is required.</span>
+                      </div>
+                    </div>
+            
+                    <!-- Specialization Input -->
+                    <div class="mb-6">
+                      <label for="specialization" class="block mb-2 text-gray-700">Specialization</label>
+                      <input formControlName="specialization" name="specialization" type="text" id="specialization"
+                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                    </div>
+            
+                    <!-- Name of Institution Input -->
+                    <div class="mb-6">
+                      <label for="institution" class="block mb-2 text-gray-700">Name of Institution</label>
+                      <input formControlName="institution" name="institution" type="text" id="institution"
+                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                    </div>
+            
+                    <!-- Passout Year and Month Inputs -->
+                    <div class="mb-6">
+                      <label for="passoutYear" class="block mb-2 text-gray-700">Passout Year and Month</label>
+                      <div class="flex">
+                        <select formControlName="passoutYear" id="passoutYear"
+                                class="w-1/2 mr-2 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                          <option value="">Year</option>
+                          <!-- Generate options for years from 1990 to 2024 -->
+                          <ng-container *ngFor="let year of getYearOptions()">
+                            <option [value]="year">{{ year }}</option>
+                          </ng-container>
+                        </select>
+                        <select formControlName="passoutMonth" id="passoutMonth"
+                                class="w-1/2 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                          <option value="">Month</option>
+                          <!-- Generate options for months -->
+                          <option value="January">January</option>
+                          <option value="February">February</option>
+                          <option value="March">March</option>
+                          <option value="April">April</option>
+                          <option value="May">May</option>
+                          <option value="June">June</option>
+                          <option value="July">July</option>
+                          <option value="August">August</option>
+                          <option value="September">September</option>
+                          <option value="October">October</option>
+                          <option value="November">November</option>
+                          <option value="December">December</option>
+                        </select>
+                      </div>
+                      <div *ngIf="profileForm.get('passoutYear')?.touched && profileForm.get('passoutYear')?.invalid" class="text-red-500 mt-1">
+                        <span *ngIf="profileForm.get('passoutYear')?.errors?.['pattern']">Passout Year must be a 4-digit number.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              
+                <div *ngIf="currentStep === 3">
+                  <h2 class="text-2xl font-semibold mb-6 text-purple-700">Experience</h2>
+                  <div>
+                    <div class="mb-4">
+                      <label class="block mb-2 text-gray-700">Fresher</label>
+                      <input type="checkbox" formControlName="isFresher" class="mr-2"> Yes
+                    </div>
+                    <div class="mb-4">
+                      <label for="jobRole" class="block mb-2 text-gray-700">Job Role</label>
+                      <input formControlName="jobRole" name="jobRole" type="text" id="jobRole"
+                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                      <div *ngIf="profileForm.get('experience.jobRole')?.invalid && profileForm.get('experience.jobRole')?.touched"
+                           class="text-red-500 mt-1">Job role is required.
+                      </div>
+                    </div>
+                    <div class="mb-4">
+                      <label for="companyName" class="block mb-2 text-gray-700">Company Name</label>
+                      <input formControlName="companyName" name="companyName" type="text" id="companyName"
+                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                      <div *ngIf="profileForm.get('experience.companyName')?.invalid && profileForm.get('experience.companyName')?.touched"
+                           class="text-red-500 mt-1">Company name is required.
+                      </div>
+                    </div>
+                    <div class="mb-4">
+                      <label for="experienceDuration" class="block mb-2 text-gray-700">Experience Duration (months)</label>
+                      <input formControlName="experienceDuration" name="experienceDuration" type="number" id="experienceDuration"
+                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
+                      <div *ngIf="profileForm.get('experience.experienceDuration')?.invalid && profileForm.get('experience.experienceDuration')?.touched"
+                           class="text-red-500 mt-1">
+                        <div *ngIf="profileForm.get('experience.experienceDuration')?.errors?.['required']">Experience duration is required.</div>
+                        <div *ngIf="profileForm.get('experience.experienceDuration')?.errors?.['min']">Experience duration cannot be negative.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div  *ngIf="currentStep === 4">
+                  <div class="w-full my-8 p-8 items-center bg-white rounded-2xl shadow-xl overflow-hidden sm:max-w-4xl hover:shadow-xl ">
+                    <h2 class="text-2xl font-semibold mb-6 text-purple-700">Skills</h2>
+                    <form [formGroup]="profileForm" (ngSubmit)="candidateProfile()">
+                      <div class="flex flex-col items-center mt-1 text-sm sm:flex-row sm:space-y-0 sm:space-x-4">
+                        <div class="w-full sm:mb-2">
+                          <label for="skillInput">
+                            <span class="ml-2 text-sm text-black-800 sm:text-base dark:text-black-200">What are your skills?</span>
+                            <input id="skillInput" formControlName="newSkill" minlength="3"
+                              class="mt-1 py-3 px-5 w-full border-2 border-purple-300 rounded-2xl outline-none placeholder:text-gray-400 invalid:text-pink-700 invalid:focus:ring-pink-700 invalid:focus:border-pink-700 peer  dark:placeholder:text-gray-300 dark:invalid:text-pink-300 dark:border-gray-400"
+                              type="text" placeholder="Type a skill" />
+                            <p class="ml-2 text-xs text-pink-700 invisible peer-invalid:visible dark:text-gray-200">Must be at least 3 characters</p>
+                          </label>
+                        </div>
+                        <div
+                          class="w-full text-center py-3 px-8 text-sm font-medium bg-purple-500 text-gray-100 rounded-2xl cursor-pointer sm:w-min hover:bg-purple-700 hover:text-gray-50 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50 mb-4 sm:mb-0"
+                          (click)="addSkill()">
+                          <span>Add</span>
+                        </div>
+                      </div>
+                    </form>
+                    <div class='px-2 pt-2 pb-11 mb-3 flex flex-wrap rounded-lg bg-purple-200 dark:bg-gray-400'>
+                      <ng-container *ngFor="let skill of skills.value; let i = index">
+                        <span
+                          class="flex flex-wrap pl-4 pr-2 py-2 m-1 justify-between items-center text-sm font-medium rounded-xl cursor-pointer bg-purple-500 text-gray-200 hover:bg-purple-600 hover:text-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100">
+                          {{ skill }}
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-3 hover:text-gray-300" viewBox="0 0 20 20"
+                            fill="currentColor" (click)="removeSkill(i)">
+                            <path fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clip-rule="evenodd" />
+                          </svg>
+                        </span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                
+              
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between">
+                  <button (click)="previousStep()" class="bg-gray-500 z-50 text-white px-6 py-2 rounded hover:bg-gray-600 transition duration-300"
+                          [disabled]="currentStep === 1">
+                    Previous
+                  </button>
+                  <button *ngIf="currentStep !== 4" (click)="nextStep()" class="bg-purple-700 text-white px-6 py-2 rounded hover:bg-purple-800 transition duration-300">
+                    Next
+                  </button>
+                  <button *ngIf="currentStep === 4" (click)="candidateProfile()" type="submit" class="bg-green-700 text-white px-6 py-2 rounded hover:bg-green-800 transition duration-300">
+                    Submit
+                  </button>
+                </div>
+              </form>
+              
+              
+            </div>
+          </div>
+          
+          
+        
+                
+        <app-footer></app-footer>
+    </div>

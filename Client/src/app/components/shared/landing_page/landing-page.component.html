@@ -1,0 +1,51 @@
+
+    <!-- Header -->
+    <header class="bg-teal-200 py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="flex items-center">
+                <img src="../../../../assets/logo.png" alt="Logo" class="h-10">
+                <h1 class="text-2xl font-bold text-teal-900 ml-2">Connect.</h1>
+            </div>
+            <div class="flex space-x-4">
+                <button type="button" class="bg-blue-700 text-white py-2 px-4 rounded hover:bg-sky-400" [routerLink]="['/candidate/login']">Candidate Login</button> 
+                <button class="bg-blue-200 text-blue-700 py-2 px-4 rounded hover:bg-sky-300" [routerLink]="['/recruiter/login']">Employer Login</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="bg-white">
+        <div class="container mx-auto py-12 px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800">Join the next generation of job hunters and Upload your Video CV now!</h2>
+            <p class="text-gray-600 mt-4">Increase your chances and let employers find you</p>
+            <button class="bg-blue-700 text-white py-2 px-6 rounded mt-4" [routerLink]="['/candidate/login']" >Login Now</button>
+        </div>
+
+        <!-- Search Section -->
+        <div class="container mx-auto flex justify-center items-center mt-12">
+            <div class="bg-white shadow-lg rounded-full flex w-full max-w-3xl">
+                <input type="text" placeholder="Search Job By Skill" class="w-1/2 py-2 px-4 rounded-l-full border-r">
+                <input type="text" placeholder="Search Job By Location" class="w-1/2 py-2 px-4 border-r">
+                <button class="bg-blue-700 text-white py-2 px-6 rounded-r-full">Search job</button>
+            </div>
+        </div>
+        <p class="text-center text-gray-600 mt-4">Discover 50 Lakh+ Career Opportunities</p>
+
+        <!-- Companies Section -->
+        <section class="bg-gray-50 py-12">
+            <div class="container mx-auto text-center">
+                <h3 class="text-2xl font-bold text-gray-800">Top Companies Hiring Now</h3>
+                <div class="flex justify-center items-center space-x-8 mt-8">
+                    <img src="../../../../assets/landing_page_assets/IBM.jpg" alt="IBM" class="h-12">
+                    <img src="../../../../assets/landing_page_assets/TCS.png" alt="TCS" class="h-12">
+                    <img src="../../../../assets/landing_page_assets/META.png" alt="META" class="h-12">
+                    <img src="../../../../assets/landing_page_assets/GOOGLE.png" alt="Google" class="h-12">
+                    <img src="../../../../assets/landing_page_assets/Dropbox.png" alt="Dropbox" class="h-12">
+                    <img src="../../../../assets/landing_page_assets/youtube.jpg" alt="YouTube" class="h-12">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <app-footer></app-footer>
