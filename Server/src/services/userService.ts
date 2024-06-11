@@ -1,6 +1,7 @@
 import { userRepository } from "../repositories/userRepository";
 import { candidateRepository } from "../repositories/candidateRepository";
 import { otpService } from "../functions/otpService";
+import imageUpload from "../functions/imageUpload";
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
@@ -92,13 +93,15 @@ class UserService {
 
     async userLogin(email:string,password:string){
         const user = await userRepository.findUserByEmail(email);
+        
         console.log(password,'dsfafddfsdfdsfdfeferereerer');
         console.log(user,'dsfhuuseruseruser');
         
-        if(!user){
+        if(!user||user.isEmployee){
             throw new Error('user not exists')
         }
 
+     
         const isPasswordValid = await bcrypt.compare(password,user.password)
         console.log(isPasswordValid);
         
@@ -110,41 +113,110 @@ class UserService {
         }
 
         const token = jwt.sign({email:user.email,id:user._id},JWT_SECRET,{expiresIn:'10h'});
-        return {token,user:{email:user.email,id:user._id,username:user.username}}
+        return {token,user:{email:user.email,id:user._id,username:user.username,is_done:user.is_done},message:'Candidate login successful'}
     }
 
-    async createProfile(email:string,profileData:any){
-        const user = await userRepository.findUserByEmail(email)
 
-        if(!user){
-            throw new Error('User not found')
+    async createProfile(email: string, profileData: any, file?: Express.Multer.File): Promise<any> {
+        const user = await userRepository.findUserByEmail(email);
+    
+        if (!user||user.isEmployee) {
+            throw new Error('User not found');
         }
-        const user_id = user._id;
+        const userId = user._id.toString();
+    
+        if (!profileData) {
+            throw new Error('Profile data is missing');
+        }
+    
+        // Extract candidate data
         const candidateData = {
-            user_id: user_id,
-            fullName: profileData.candidateData.fullName,
-            phone: profileData.candidateData.phone,
-            dob: profileData.candidateData.dob,
-            image: profileData.candidateData.upload,
-            gender: profileData.candidateData.gender,
+            user_id: userId,
+            fullName: profileData.fullName,
+            phone: profileData.phone,
+            dob: profileData.dob,
+            image: '',
+            gender: profileData.gender,
             education: [{
-                qualification: profileData.candidateData.qualification,
-                specialization: profileData.candidateData.specialization,
-                nameOfInstitution: profileData.candidateData.institution,
-                passoutYear: profileData.candidateData.passoutYear,
-                passoutMonth: profileData.candidateData.passoutMonth
+                qualification: profileData.qualification,
+                specialization: profileData.specialization,
+                nameOfInstitution: profileData.institution,
+                passoutYear: profileData.passoutYear,
+                passoutMonth: profileData.passoutMonth
             }],
             experience: [{
-                isFresher: profileData.candidateData.isFresher,
-                jobRole: profileData.candidateData.jobRole,
-                companyName: profileData.candidateData.companyName,
-                experienceDuration: profileData.candidateData.experienceDuration
+                isFresher: profileData.isFresher,
+                jobRole: profileData.jobRole,
+                companyName: profileData.companyName,
+                experienceDuration: profileData.experienceDuration
             }],
-            skills: profileData.candidateData.skills
+            skills: profileData.skills
         };
-        const candidate = await candidateRepository.createCandidate(candidateData)
-        return candidate
+    
+        // Create candidate in database
+        const candidate = await candidateRepository.createCandidate(candidateData);
+    
+        // Upload image if file is provided
+        if (file && file.path) {
+            try {
+                const imageUrl = await imageUpload.uploadImage(file.path, userId);
+                if(imageUrl){
+                await candidateRepository.updateCandidateImage(userId, imageUrl);
+                }else{
+                    console.log('image url is not good');
+                    
+                }
+                candidate.image = imageUrl;
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.error('Error uploading image:', error.message);
+                    throw new Error('Error uploading image: ' + error.message);
+                } else {
+                    console.error('Unknown error uploading image:', error);
+                    throw new Error('Unknown error uploading image');
+                }
+            }
+        }
+    
+        // Update user as done
+        if (candidate) {
+            await userRepository.updateUserIsDone(userId);
+        }
+    
+        return {candidate,message:'Profile added successfully'};
     }
+    
+    
+
+
+
+    async sendForgotOtp(email:string){
+        console.log(email,'dsfadeasss');
+        
+        const otp = this.generateOtp();
+        await otpService.sendOtp(email, otp);
+
+        const token = jwt.sign({ email: email, otp }, JWT_SECRET, { expiresIn: OTP_EXPIRY_TIME });
+
+        return {message: 'Forgot Otp sent to your email', token}
+    }
+
+    async verifyForgetOtp(otp:string,otpToken:string){
+        const decoded: any = jwt.verify(otpToken, JWT_SECRET);
+            const storedOtp = decoded.otp;
+
+            if (storedOtp !== otp) {
+                throw new Error('Otp invalid');
+            }
+
+            return { message: 'Otp verified successfully' };
+    }
+    
+    async changePassword(email: string, newPassword: string) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        return await userRepository.updateUserPassword(email, hashedPassword);
+    }
+    
 }
 
 export const userService = new UserService();

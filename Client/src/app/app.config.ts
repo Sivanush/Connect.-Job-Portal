@@ -3,13 +3,15 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { candidateRoute } from './routes/candidate.route';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideToastr } from 'ngx-toastr';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { recruiterRoute } from './routes/recruiter.route';
 import { sharedRoute } from './routes/shared.route';
 import { adminRoute } from './routes/admin.route';
+import { userAuthInterceptor } from './services/interceptor/user-auth.interceptor';
+import { recruiterAuthInterceptor } from './services/interceptor/recruiter-auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +20,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(recruiterRoute),
     provideRouter(sharedRoute),
     provideRouter(adminRoute),
+    provideHttpClient(withInterceptors([userAuthInterceptor])),
+    provideHttpClient(withInterceptors([recruiterAuthInterceptor])),
     provideClientHydration(),
     provideHttpClient(withFetch()), 
     provideToastr({
@@ -28,6 +32,6 @@ export const appConfig: ApplicationConfig = {
       toastClass: 'ngx-toastr',
       positionClass: 'toast-top-right',
       preventDuplicates: true,
-    }), provideAnimationsAsync(),
+    }), provideAnimationsAsync(), provideAnimationsAsync(),
   ]
 };

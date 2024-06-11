@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FooterComponent } from '../../constants/footer/footer.component';
+import { FooterComponent } from '../../candidate/shared/footer/footer.component';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({

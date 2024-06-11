@@ -1,8 +1,18 @@
-import mongoose, { CallbackError } from "mongoose";
+import mongoose, { CallbackError,Document,Schema } from "mongoose";
 import bcrypt from 'bcryptjs';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
+export interface IUser extends Document{
+    username:string;
+    email:string;
+    password:string;
+    is_verified:boolean;
+    isEmployee:boolean;
+    isAdmin:boolean;
+    is_done:boolean
+}
 
 const userSchema = new mongoose.Schema({
     username:{
@@ -30,6 +40,10 @@ const userSchema = new mongoose.Schema({
         default:false
     },
     isAdmin:{
+        type:Boolean,
+        default:false
+    },
+    is_done:{
         type:Boolean,
         default:false
     }

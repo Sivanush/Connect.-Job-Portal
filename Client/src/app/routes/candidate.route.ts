@@ -6,6 +6,10 @@ import { OtpPageComponent } from "../components/shared/otp-page/otp-page.compone
 import { UserPersonalProfileComponent } from "../components/candidate/user-personal-profile/user-personal-profile.component";
 import { HomeComponent } from "../components/candidate/home/home.component";
 import { userAuthGuard } from "../guard/user-auth.guard";
+import { ForgetPasswordComponent } from "../components/shared/forget-password/forget-password.component";
+import { ChangePasswordComponent } from "../components/shared/change-password/change-password.component";
+import path from "path";
+import { ApplyJobComponent } from "../components/candidate/apply-job/apply-job.component";
 
 export const candidateRoute : Routes = [
     {
@@ -37,6 +41,19 @@ export const candidateRoute : Routes = [
     {
         path:'candidate/home',
         component:HomeComponent,
+        canActivate:[userAuthGuard]
+    },
+    {
+        path:'candidate/forgot-password',
+        component:ForgetPasswordComponent
+    },
+    {
+        path:'candidate/reset-password',
+        component:ChangePasswordComponent
+    },
+    {
+        path:'candidate/apply-job',
+        component:ApplyJobComponent,
         canActivate:[userAuthGuard]
     }
 ]

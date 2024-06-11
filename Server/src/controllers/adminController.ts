@@ -42,7 +42,14 @@ class AdminController{
         }
       }
 
-
+      async getAllRecruitersWithUserInfo(req: Request, res: Response) {
+        try {
+            const recruiters = await adminService.getAllRecruitersWithUserInfo();
+            res.status(200).json(recruiters);
+        } catch (error) {
+            res.status(500).json({ message: 'Error fetching users', error });
+        }
+    }
 }
 
 

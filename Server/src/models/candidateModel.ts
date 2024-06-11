@@ -1,7 +1,29 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-// Define the Candidate schema
-const candidateSchema = new Schema({
+export interface ICandidate extends Document {
+    user_id: mongoose.Schema.Types.ObjectId;
+    fullName: string;
+    phone: string;
+    dob: Date;
+    image: string;
+    gender: string;
+    education: Array<{
+        qualification: string;
+        specialization: string;
+        nameOfInstitution: string;
+        passoutYear: number;
+        passoutMonth: string;
+    }>;
+    experience: Array<{
+        isFresher: boolean;
+        jobRole?: string;
+        companyName?: string;
+        experienceDuration?: number;
+    }>;
+    skills: string[];
+}
+
+const candidateSchema = new Schema<ICandidate>({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -12,9 +34,9 @@ const candidateSchema = new Schema({
         required: true
     },
     phone: {
-        type: String, // Changed from Number to String to handle leading zeros
+        type: String,
         validate: {
-            validator: (v: string): boolean => /^\d{10}$/.test(v), // Validation for exactly 10 digits
+            validator: (v: string): boolean => /^\d{10}$/.test(v),
             message: (props: { value: string }) => `${props.value} is not a valid phone number!`
         },
         required: [true, 'User phone number required']
@@ -37,24 +59,22 @@ const candidateSchema = new Schema({
         specialization: { type: String, required: true },
         nameOfInstitution: { type: String, required: true },
         passoutYear: { type: Number, min: 1990, max: new Date().getFullYear(), required: true },
-        passoutMonth: { 
-            type: String, 
-            enum: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], 
-            required: true 
+        passoutMonth: {
+            type: String,
+            enum: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            required: true
         }
     }],
     experience: [{
         isFresher: { type: Boolean, required: true },
-        jobRole: { type: String, required: function(this: { isFresher: boolean }) { return !this.isFresher; } },
-        companyName: { type: String, required: function(this: { isFresher: boolean }) { return !this.isFresher; } },
-        experienceDuration: { type: Number, min: 0, required: function(this: { isFresher: boolean }) { return !this.isFresher; } }
+        jobRole: { type: String, required: function (this: { isFresher: boolean }) { return !this.isFresher; } },
+        companyName: { type: String, required: function (this: { isFresher: boolean }) { return !this.isFresher; } },
+        experienceDuration: { type: Number, min: 0, required: function (this: { isFresher: boolean }) { return !this.isFresher; } }
     }],
     skills: {
         type: [String],
         required: true
-    }
+    },
 });
 
-// Define the Candidate model
-export const Candidate = mongoose.model<Document & { user_id: mongoose.Schema.Types.ObjectId }>('Candidate', candidateSchema);
-
+export const Candidate = mongoose.model<ICandidate>('Candidate', candidateSchema);

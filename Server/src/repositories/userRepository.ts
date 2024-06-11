@@ -17,6 +17,15 @@ class UserRepository {
     async findUserById(user_id:string){
         return await User.findById(user_id)
     }
+
+    async updateUserPassword(email: string, newPassword: string) {
+        return await User.updateOne({ email }, { password: newPassword });
+    }
+
+    async updateUserIsDone (user_id: string){
+        return await User.findByIdAndUpdate(user_id, { is_done: true }, { new: true });
+    }
+
 }
 
 export const userRepository = new UserRepository();

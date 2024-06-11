@@ -4,6 +4,7 @@ import cors from 'cors'
 import connectDB from './config/db';
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
+import recruiterRoutes from './routes/recruiterRoutes'
 
 dotenv.config()
 
@@ -19,10 +20,11 @@ app.use(cors(corsOption))
 
 app.use('/admin',adminRoutes)
 app.use('/candidate',userRoutes)
+app.use('/recruiter',recruiterRoutes)
 
 connectDB();
 
-const PORT = 5001;
+const PORT = 5000;
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);

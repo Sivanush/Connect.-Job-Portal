@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from '../../constants/footer/footer.component';
+import { FooterComponent } from '../../candidate/shared/footer/footer.component';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserBackendService } from '../../../services/users/user-backend.service';
+import { userService } from '../../../services/users/user.service';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import { MatSlideToggleModule,_MatSlideToggleRequiredValidatorModule,} from '@angular/material/slide-toggle';
@@ -29,7 +29,7 @@ export class SignupComponent {
   userForm:FormGroup;
   isChecked = true;
 
-  constructor(private userBackendService:UserBackendService,private toster: ToastrService, fb: FormBuilder, private router: Router){ 
+  constructor(private userService:userService,private toster: ToastrService, fb: FormBuilder, private router: Router){ 
     this.userForm = fb.group({
       username: [null, [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z]+$/)]],
       email: [null, [Validators.required, Validators.email]],
@@ -52,14 +52,14 @@ export class SignupComponent {
   }
 
   signupUser(){
-    console.log('clicked',this.userForm.value);
+    console.log('clicked',typeof this.userForm.value);
     
-    this.userBackendService.signup(this.userForm.value).subscribe({
+    this.userService.signup(this.userForm.value).subscribe({
       next: (response)=>{
         console.log(response);
         
         this.toster.success(response.message,'success')
-        localStorage.setItem('email', this.userForm.value.email);
+        
         localStorage.setItem('isEmployee',this.userForm.value.isEmployee)
         this.userForm.reset();
         this.router.navigate(['/candidate/otp-page']) 

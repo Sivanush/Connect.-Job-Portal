@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from '../../constants/footer/footer.component';
+import { FooterComponent } from '../../candidate/shared/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { NgxOtpInputConfig, NgxOtpInputModule } from 'ngx-otp-input';
 import { FormsModule } from '@angular/forms';
-import { UserBackendService } from '../../../services/users/user-backend.service';
+import { userService } from '../../../services/users/user.service';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
@@ -27,7 +27,7 @@ export class OtpPageComponent {
   interval: any;
 
   constructor(
-    private userBackend: UserBackendService,
+    private userService: userService,
     private toaster: ToastrService,
     private router: Router
   ) {
@@ -64,7 +64,7 @@ export class OtpPageComponent {
     console.log(otpToken);
 
     if (this.otp && otpToken) {
-      this.userBackend.verifyOtp(this.otp, otpToken).subscribe({
+      this.userService.verifyOtp(this.otp, otpToken).subscribe({
         next: (response) => {
           console.log(response);
           this.toaster.success(response.message, 'Success');
@@ -89,7 +89,7 @@ export class OtpPageComponent {
     console.log(email,'dshfoiuhdfhdiufhfdiuhffhdshfdsfhdsfhdsfdshdsh');
     
     if (email) {
-      this.userBackend.resendOtp(email).subscribe({
+      this.userService.resendOtp(email).subscribe({
         next: (response) => {
           console.log(response);
           this.toaster.success(response.message, 'Success');

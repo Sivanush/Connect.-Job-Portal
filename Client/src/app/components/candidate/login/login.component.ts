@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from '../../constants/footer/footer.component';
+import { FooterComponent } from '../shared/footer/footer.component';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserBackendService } from '../../../services/users/user-backend.service';
+import { userService } from '../../../services/users/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 
@@ -24,7 +24,7 @@ export class LoginComponent {
   
 
   constructor(
-    private userBackend:UserBackendService,
+    private userService:userService,
     private toastr:ToastrService,
     private fb:FormBuilder,
     private router:Router
@@ -38,16 +38,21 @@ export class LoginComponent {
   
 
   userLogin() {
+    localStorage.setItem('candidateEmail', this.loginForm.value.email);
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
        
-      this.userBackend.login(this.loginForm.value).subscribe({
+      this.userService.login(this.loginForm.value).subscribe({
         next:(response)=>{
-          console.log(response);
+          console.log(response,'reseress');
           localStorage.setItem('userToken',response.token)
-          localStorage.setItem('user',response.user)
+          const user = response.user
           this.toastr.success(response.message,'Success')
-          this.router.navigate(['/candidate/profile'])
+          if(user.is_done){
+          this.router.navigate(['/candidate/home'])
+          }else{
+            this.router.navigate(['/candidate/profile'])
+          }
         },
         error: (error) => {
           this.toastr.error(error.error.error, 'Error');

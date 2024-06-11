@@ -42,6 +42,9 @@ class AdminService{
         return user;
       }
     
+      async getAllRecruitersWithUserInfo(){
+        return await adminRepository.getAllRecruitersWithUserInfo();
+      }
 
 }
 

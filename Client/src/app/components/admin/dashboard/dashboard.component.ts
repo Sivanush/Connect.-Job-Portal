@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { AdminBackendService } from '../../../services/admin/admin-backend.service';
+import { AdminBackendService } from '../../../services/admin/admin.service';
 import { ToastrService } from 'ngx-toastr';
-import { AdminHeaderComponent } from "../constants/admin-header/admin-header.component";
-import { AdminSideBarComponent } from "../constants/admin-side-bar/admin-side-bar.component";
-import { FooterComponent } from "../../constants/footer/footer.component";
+import { AdminHeaderComponent } from "../shared/admin-header/admin-header.component";
+import { AdminSideBarComponent } from "../shared/admin-side-bar/admin-side-bar.component";
+import { FooterComponent } from '../../candidate/shared/footer/footer.component';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({

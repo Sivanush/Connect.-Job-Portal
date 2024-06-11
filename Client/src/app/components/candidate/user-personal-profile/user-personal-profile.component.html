@@ -50,10 +50,18 @@
                     </div>
                   </div>
                   <div class="mb-6">
-                    <label for="upload" class="block mb-2 text-gray-700">Upload Image</label>
-                    <input formControlName="upload" type="file" id="upload"
-                           class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-purple-700">
-                  </div>
+                    <div>
+                      <button (click)="imageInput.click()" class="bg-blue-700 py-2 px-4 rounded-md text-white">Add profile pic</button>
+                      <input #imageInput hidden type="file" (change)="onFileSelected($event)" accept="image/*">
+                    </div>
+                    <div *ngIf="selectedFileName">
+                        <p>Image added: {{ selectedFileName }}</p>
+                        <img [src]="imagePreview" *ngIf="imagePreview" alt="Profile Image Preview" style="max-width: 100px; max-height: 100px;">
+                    </div>
+                  
+                </div>
+                
+                  
                   <div class="mb-6">
                     <label class="block mb-2 text-gray-700">Gender</label>
                     <div class="flex space-x-4">

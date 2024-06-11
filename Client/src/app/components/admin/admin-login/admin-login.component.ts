@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { FooterComponent } from '../../constants/footer/footer.component';
+import { FooterComponent } from '../../candidate/shared/footer/footer.component';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { AdminBackendService } from '../../../services/admin/admin-backend.service';
+import { AdminBackendService } from '../../../services/admin/admin.service';
 
 @Component({
   selector: 'app-admin-login',

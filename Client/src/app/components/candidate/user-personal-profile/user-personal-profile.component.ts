@@ -1,13 +1,12 @@
-import { Component } from '@angular/core';
-import { FooterComponent } from "../../constants/footer/footer.component";
-import { UserBackendService } from '../../../services/users/user-backend.service';
+import { Component, OnInit } from '@angular/core';
+import { FooterComponent } from '../shared/footer/footer.component';
+import { userService } from '../../../services/users/user.service';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { response } from 'express';
-import { HeaderComponent } from "../../constants/header/header.component";
+import { HeaderComponent } from '../shared/header/header.component';
 
 @Component({
     selector: 'app-user-personal-profile',
@@ -21,24 +20,28 @@ import { HeaderComponent } from "../../constants/header/header.component";
         HttpClientModule,
         ToastrModule,
         ReactiveFormsModule,
-        HeaderComponent
+        HeaderComponent,
     ]
 })
-export class UserPersonalProfileComponent {
+export class UserPersonalProfileComponent implements OnInit{
   profileForm: FormGroup;
   currentStep: number = 1;
+  selectedFile:File|undefined
+  selectedFileName: string | null = null;
+  imagePreview: string | null = null;
+
 
   constructor(
     private fb: FormBuilder,
     private toastr:ToastrService,
     private router:Router,
-    private userBackend:UserBackendService
+    private userBackend:userService
   ) {
     this.profileForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z ]+$/)]],
       phone: ['', [Validators.required,Validators.minLength(10),Validators.maxLength(10),Validators.pattern('^[0-9]*$')]],
       dob: ['', Validators.required],
-      upload: ['', Validators.required],
+      upload: [null, Validators.required],
       gender: ['', Validators.required],
       qualification: ['', Validators.required],
       specialization: ['',Validators.required],
@@ -54,6 +57,34 @@ export class UserPersonalProfileComponent {
     });
 
   }
+
+  ngOnInit(): void {}
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.selectedFileName = file.name;
+
+      // Show image preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
+      this.profileForm.patchValue({
+        upload: file
+      });
+      this.profileForm.get('upload')!.updateValueAndValidity();
+    }
+  }
+
+
+
+
+
+
   newSkill(): FormControl {
     return this.fb.control('', Validators.required);
   }
@@ -102,25 +133,41 @@ export class UserPersonalProfileComponent {
   }
 
   candidateProfile() {
-    const email = localStorage.getItem('email')
-    console.log(email);
-    console.log(this.profileForm.value);
-    
-    if (this.profileForm.value && email) {
-      this.userBackend.profile(email,this.profileForm.value).subscribe({
-        next:(response)=>{
-          console.log(response);
-          this.toastr.success(response.message, 'Success');
-          this.router.navigate(['/candidate/home'])
-        },
-        error: (error) => {
-          this.toastr.error(error.error.error, 'Error');
-          console.error(error);
+    const email = localStorage.getItem('candidateEmail');
+    if (email) {
+        const formData = new FormData();
+        formData.append('email', email);
+
+        // Append each form control value to FormData
+        for (const key in this.profileForm.value) {
+            if (key === 'upload' && this.selectedFile) {
+                formData.append('upload', this.selectedFile);
+            } else if (key === 'skills') {
+                this.profileForm.value[key].forEach((skill: string, index: number) => {
+                    formData.append(`candidateData[skills][${index}]`, skill);
+                });
+            } else {
+                formData.append(`candidateData[${key}]`, this.profileForm.value[key]);
+            }
         }
-      })
+
+        this.userBackend.profile(formData).subscribe({
+            next: (response) => {
+                console.log(response);
+                this.toastr.success(response.message, 'Success');
+                this.router.navigate(['/candidate/home']);
+            },
+            error: (error) => {
+                this.toastr.error(error.error.error, 'Error');
+                console.error(error);
+            }
+        });
     } else {
-      console.log("Form is not valid or there is no email");
+        console.log("Form is not valid or there is no email");
     }
-  }
+}
+
+
+
 
 }

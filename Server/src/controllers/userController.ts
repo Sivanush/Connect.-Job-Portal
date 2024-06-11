@@ -74,11 +74,48 @@ class UserController {
         }
     }
 
-    async createProfile(req:Request,res:Response){ 
+    async createProfile(req: Request, res: Response) { 
         try {
-            const email = req.body.email
-            const profileData = req.body;
-            const result = await userService.createProfile(email,profileData)
+            const email = req.body.email;
+            const profileData = req.body.candidateData;
+            const file = req.file;
+            console.log(email, profileData,'njn sambavam');  // Log incoming data for debugging
+    
+            const result = await userService.createProfile(email, profileData, file);
+            res.status(200).json(result);
+        } catch (err) {
+            if (err instanceof Error) {
+                res.status(400).json({ error: err.message });
+            } else {
+                res.status(400).json({ error: 'An unknown error occurred' });
+            }
+        }
+    }
+    
+
+    async sendForgotOtp(req:Request,res:Response){
+        try {
+            const {email} = req.body;
+            const result = await userService.sendForgotOtp(email);
+            res.status(200).json(result);
+        } catch (err) {
+            if (err instanceof Error) {
+                res.status(400).json({ error: err.message });
+            } else {
+                res.status(400).json({ error: 'An unknown error occurred' });
+            }
+        }
+    }
+    
+    async verifyForgetOtp(req:Request,res:Response){
+        try {
+            const {otp,token} = req.body;
+
+            if(!token){
+                throw new Error('JWT token must be required')
+            }
+
+            const result = await userService.verifyForgetOtp(otp,token)
             res.status(200).json(result)
         } catch (err) {
             if (err instanceof Error) {
@@ -88,6 +125,26 @@ class UserController {
             }
         }
     }
+
+    async resetPassword(req: Request, res: Response) {
+        try {
+            const { email, newPassword } = req.body;
+    
+            if (!email || !newPassword) {
+                throw new Error('Email and new password must be provided');
+            }
+    
+            const result = await userService.changePassword(email, newPassword);
+            res.status(200).json(result);
+        } catch (err) {
+            if (err instanceof Error) {
+                res.status(400).json({ error: err.message });
+            } else {
+                res.status(400).json({ error: 'An unknown error occurred' });
+            }
+        }
+    }
+    
 }
 
 export const userController = new UserController();
